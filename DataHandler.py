@@ -2,28 +2,23 @@
 
 """ Data Handler Class
 
-The idea is to create a hierarchical data file handler that can store data
-at different levels, e.g., experiment, block, and trial. You can add data
-at different levels, reset at each iteration (clearing out that level and
-all lower levels), and output a line when requested.
+Defines a simple data file handler that can store data and output it cleanly.
+
 """
 
 import os, os.path
 
 class DataHandler:
-    def __init__(self, filename, levels, output_type="csv"):
-        self.levels = levels
+    def __init__(self, filename, output_type="csv"):
         self.filename = filename
         self.data = {}
-        for level in self.levels:
-            self.data[level] = {}
         if output_type == "csv":
             self.sep = ','
         else:
             raise ValueError("data file output type not recognized")
 
-    def AddData(self, level, name, value):
-        self.data[level][name] = str(value)
+    def AddData(self, name, value):
+        self.data[name] = str(value)
 
     def InitializeDataDirectory(self):
         # check if the data directory exists, and if not create it
@@ -44,9 +39,8 @@ class DataHandler:
             raise
         else:
             header = list()
-            for level in self.data:
-                for k, v in self.data[level].items():
-                    header.append(k)
+            for k, v in self.data.items():
+                header.append(k)
             if len(header) > 0:
                 with open(self.filename, 'w') as f:
                     f.write(self.sep.join(header) + '\n')
@@ -55,9 +49,8 @@ class DataHandler:
         self.InitializeDataDirectory()
         self.InitializeDataFile()
         line = list()
-        for level in self.data:
-            for k, v in self.data[level].items():
-                line.append(v)
+        for k, v in self.data.items():
+            line.append(v)
         if len(line) > 0:
             with open(self.filename, 'a') as f:
                 f.write(self.sep.join(line) + '\n')
@@ -65,11 +58,12 @@ class DataHandler:
 import time
 
 if __name__=="__main__":
-    datafile = DataHandler("testdata/test.csv", ["exp", "block", "trial"], 'csv')
-    datafile.AddData("exp", "name", "TestData")
-    datafile.AddData("exp", "runtime", time.strftime("%Y%m%d-%H%M%S"))
+    datafile = DataHandler("testdata/test.csv", 'csv')
+    datafile.AddData("name", "TestData")
+    datafile.AddData("runtime", time.strftime("%Y%m%d-%H%M%S"))
     for b in ['prac', 'exp']:
-        datafile.AddData('block', 'blocktype', b)
+        datafile.AddData('blocktype', b)
         for t in range(4):
-            datafile.AddData("trial", "trial", t + 1)
+            datafile.AddData("trial", t + 1)
+            datafile.AddData("rt", .56939567238954560934572)
             datafile.OutputLine()
