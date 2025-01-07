@@ -37,7 +37,8 @@ class DataHandler:
         if os.path.exists(self.filename) and os.path.isfile(self.filename):
             return
         elif os.path.exists(self.filename) and not os.path.isfile(self.filename):
-            raise
+            s = "data file '%s' is an existing directory" % self.filename
+            raise IsADirectoryError(s)
         else:
             header = list()
             for k, v in self.data.items():
