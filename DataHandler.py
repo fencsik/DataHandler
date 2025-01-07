@@ -6,7 +6,7 @@ Defines a simple data file handler that can store data and output it cleanly.
 
 """
 
-import os, os.path
+import os
 
 class DataHandler:
     def __init__(self, filename, output_type="csv"):
