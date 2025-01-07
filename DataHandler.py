@@ -26,7 +26,8 @@ class DataHandler:
         if os.path.exists(dirname) and os.path.isdir(dirname):
             return
         elif os.path.exists(dirname) and not os.path.isdir(dirname):
-            raise NotADirectoryError("data directory is an existing file")
+            s = "data directory '%s' is an existing file" % dirname
+            raise NotADirectoryError(s)
         else:
             os.makedirs(dirname)
             return
